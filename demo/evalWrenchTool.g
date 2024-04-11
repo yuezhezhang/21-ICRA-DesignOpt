@@ -29,7 +29,7 @@ gripper (panda_joint7){
 
 wrench(gripper) { Q:<d(60 1 0 0)> joint:rigid }
 
-wrenchShape(wrench) { Q:< t(0 0 -.04)>, mesh:'../scenarios/wrench/wrench.ply', color:[.9 .9 .9]  }
+wrenchShape(wrench) { Q:< t(0 0 -.04)>, mesh:'../scenarios/wrench/meshes/Wrench_01.ply', color:[.9 .9 .9]  }
 wrenchEnd(wrench) { Q:<t(-.003 0 -.2) d(-90 1 0 0)> }
 deform8(wrenchEnd) { } #shape:marker, size:[.25] }
 wrenchTip(deform8) { shape:marker, size:[.03], color:[.9 .9 .5] }
