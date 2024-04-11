@@ -1,7 +1,7 @@
 #include <Kin/kin.h>
 #include <KOMO/komo.h>
-#include <Kin/F_dynamics.h>
-#include <Kin/TM_angVel.h>
+// #include <Kin/F_dynamics.h>
+// #include <Kin/TM_angVel.h>
 
 #include <Gui/opengl.h>
 
@@ -51,98 +51,6 @@ void solve(KOMO& komo, const Skeleton& S, OptOptions options = OptOptions()){
   (~~taus).write(FILE("z.dat"), " ", 0, "  ");
   gnuplot("plot 'z.dat' us 0:1", true);
 #endif
-}
-
-//===========================================================================
-
-void passive_ballBounce(){
-  rai::Configuration K;
-  K.addFrame("base");
-  K.addObject("floor", nullptr, rai::ST_ssBox, {1., 1., .1, .02}, {}, {0., .0,.5});
-  K.addObject("ball",  nullptr, rai::ST_sphere, {.05}, {}, {.0, .0, 1.});
-//  auto I = new rai::Inertia(*b);
-//  I->mass = 1.;
-//  I->defaultInertiaByShape();
-
-  Skeleton S = {
-    { .0, 5., SY_dynamic, {"ball"} },
-    { 1., 1., SY_bounce, {"floor", "ball"} },
-    { 2., 2., SY_bounce, {"floor", "ball"} },
-    { 3., 3., SY_bounce, {"floor", "ball"} },
-    { 4., 4., SY_bounce, {"floor", "ball"} },
-  };
-
-  KOMO komo;
-  komo.setModel(K, false);
-  komo.setTiming(4.5, 10., .2);
-  komo.addTimeOptimization();
-  komo.setSkeleton(S);
-
-  solve(komo, S);
-}
-
-//===========================================================================
-
-void passive_elasticBounce(){
-  rai::Configuration K;
-  K.addFrame("base");
-  K.addObject("floor", nullptr, rai::ST_ssBox, {1., 1., .1, .02}, {}, {0.,-.6,.5}, {1., .1, 0., 0.});
-  K.addObject("ball",  nullptr, rai::ST_ssBox, {.0, .4, .1, .05}, {}, {.0, .0, 1.05});
-
-  Skeleton S = {
-    { 0., .1, SY_magicTrans, {"ball"} },
-    { .1, 1., SY_dynamic, {"ball"} },
-    { .5, .5, SY_bounce, {"floor", "ball"} },
-  };
-
-  KOMO komo;
-  komo.setModel(K, false);
-  komo.setTiming(1., 20, 1.);
-  komo.setSkeleton(S);
-
-  solve(komo, S);
-}
-
-//===========================================================================
-
-void passive_complementarySlide(){
-  rai::Configuration K;
-  K.addObject("floor", nullptr, rai::ST_ssBox, {1., 1., .1, .02}, {}, {0.,.5,.5}, {1., .1, 0., 0.});
-  K.addObject("box",  nullptr, rai::ST_ssBox, {.4, .4, .2, .05}, {}, {.0, .0, .65}, {1., .1, 0., 0.3});
-
-  Skeleton S = {
-    { 0., 1., SY_dynamic, {"box"} },
-    { 0., 1., SY_contactComplementary, {"floor", "box"} },
-  };
-
-  KOMO komo;
-  komo.setModel(K, false);
-  komo.setTiming(1., 50, 1.);
-  komo.addTimeOptimization();
-  komo.setSkeleton(S);
-
-  solve(komo, S);
-}
-
-//===========================================================================
-
-void passive_stickyTumbling(){
-  rai::Configuration K;
-  K.addObject("floor", nullptr, rai::ST_ssBox, {1., 1., .1, .02}, {}, {0.,0., .5}, {1., .3, 0., 0.});
-  K.addObject("box",  nullptr, rai::ST_ssBox, {.4, .2, .4, .05}, {}, {.0, .0, 1.1}, {1., 0., 0., .3});
-
-  Skeleton S = {
-    { 0., 1., SY_dynamic, {"box"} },
-    { .2, 1., SY_contactStick, {"floor", "box"} },
-  };
-
-  KOMO komo;
-  komo.setModel(K, false);
-  komo.setTiming(1., 20, 1.);
-  komo.addTimeOptimization();
-  komo.setSkeleton(S);
-
-  solve(komo, S);
 }
 
 //===========================================================================
@@ -353,14 +261,6 @@ int main(int argc,char **argv){
   rai::initCmdLine(argc, argv);
 
 //  rnd.clockSeed();
-
-#if 0
-  passive_ballBounce();
-  passive_elasticBounce();
-  passive_complementarySlide();
-  passive_stickyTumbling();
-  return 0;
-#endif
 
   scenario(stableGrasp);
   scenario(bookOnShelf);
