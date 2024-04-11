@@ -224,7 +224,7 @@ void scenario(Scenario s){
 
   KOMO komo;
   komo.setModel(C, false);
-  komo.sparseOptimization=true;
+  // komo.sparseOptimization=true;
   if(s==billards){
     komo.setTiming(maxPhase, 20, .2);
     komo.addTimeOptimization();
