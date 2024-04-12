@@ -1,13 +1,11 @@
 #include <Kin/kin.h>
 #include <KOMO/komo.h>
-// #include <Kin/F_dynamics.h>
-// #include <Kin/TM_angVel.h>
-
 #include <Gui/opengl.h>
+#include <Kin/animation.h>
 
 //===========================================================================
 
-void solve(KOMO& komo, const Skeleton& S, OptOptions options = OptOptions()){
+void solve(rai::Configuration C, KOMO& komo, const Skeleton& S, OptOptions options = OptOptions()){
 //  komo.animateOptimization = 4;
   komo.verbose=4;
 //  komo.reportProblem();
@@ -42,15 +40,10 @@ void solve(KOMO& komo, const Skeleton& S, OptOptions options = OptOptions()){
     }
   }
 
-
-//  while(komo.displayTrajectory(2.5, true, true, 0, txt));
-  komo.displayTrajectory(1., false, true, "z.vid/", txt);
-
-#if 0 //to display the timing evolution
-  arr taus = komo.getPath_tau();
-  (~~taus).write(FILE("z.dat"), " ", 0, "  ");
-  gnuplot("plot 'z.dat' us 0:1", true);
-#endif
+  //-- display
+  rai::ConfigurationViewer V;
+  V.setConfiguration(komo.pathConfig, "optimized -- press 'q' to move on!", true);
+  while(V.playVideo(C.frames.N, true));
 }
 
 //===========================================================================
@@ -252,7 +245,7 @@ void scenario(Scenario s){
     komo.addObjective({0,maxPhase+.5}, FS_distance, {collisions(i), collisions(i+1)}, OT_ineq, {1e1});
   }
 
-  solve(komo, S, options);
+  solve(C, komo, S, options);
 }
 
 //===========================================================================
